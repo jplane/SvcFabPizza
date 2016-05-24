@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SvcFabPizzaType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+   <Parameters>
+      <Parameter Name="GatewayService_InstanceCount" DefaultValue="-1" />
+      <Parameter Name="PizzaOrderActorService_PartitionCount" DefaultValue="10" />
+      <Parameter Name="PizzaOrderActorService_MinReplicaSetSize" DefaultValue="2" />
+      <Parameter Name="PizzaOrderActorService_TargetReplicaSetSize" DefaultValue="3" />
+   </Parameters>
+   <ServiceManifestImport>
+      <ServiceManifestRef ServiceManifestName="OrderServicePkg" ServiceManifestVersion="1.0.0" />
+   </ServiceManifestImport>
+   <ServiceManifestImport>
+      <ServiceManifestRef ServiceManifestName="GatewayServicePkg" ServiceManifestVersion="1.0.0" />
+      <ConfigOverrides />
+   </ServiceManifestImport>
+   <DefaultServices>
+      <Service Name="GatewayService">
+         <StatelessService ServiceTypeName="GatewayServiceType" InstanceCount="[GatewayService_InstanceCount]">
+            <SingletonPartition />
+         </StatelessService>
+      </Service>
+      <Service Name="PizzaOrderActorService" GeneratedIdRef="fa403345-572c-48f7-9f54-05a8c550b74b|Persisted">
+         <StatefulService ServiceTypeName="PizzaOrderActorServiceType" TargetReplicaSetSize="[PizzaOrderActorService_TargetReplicaSetSize]" MinReplicaSetSize="[PizzaOrderActorService_MinReplicaSetSize]">
+            <UniformInt64Partition PartitionCount="[PizzaOrderActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+         </StatefulService>
+      </Service>
+   </DefaultServices>
+</ApplicationManifest>
